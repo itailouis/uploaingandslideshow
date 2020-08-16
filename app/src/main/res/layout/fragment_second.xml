@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.SecondFragment">
+
+  <androidx.viewpager.widget.ViewPager
+    android:id="@+id/viewPage"
+    android:background="#2755A3"
+    android:layout_above="@id/button_second"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <Button
+
+    android:layout_alignParentBottom="true"
+        android:id="@+id/button_second"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/previous"
+         />
+</RelativeLayout>
