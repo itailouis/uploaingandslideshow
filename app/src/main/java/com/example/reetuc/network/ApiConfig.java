@@ -18,7 +18,7 @@ public interface ApiConfig {
 
   @Multipart
   @POST("upload.php")
-  Call<ServerResponse> uploadFile(@Query("id") int id, @Part MultipartBody.Part file, @Part("file") RequestBody name);
+  Call<ServerResponse> uploadFile(@Query("id") int id, @Part MultipartBody.Part file, @Part("name") RequestBody name);
 
   @Multipart
   @POST("upload_multiple_files.php")

@@ -38,6 +38,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.bumptech.glide.Glide;
 import com.example.reetuc.App;
 import com.example.reetuc.R;
 import com.example.reetuc.dialogs.SetDateDialogFragment;
@@ -256,9 +257,10 @@ private static final String TAG = FirstFragment.class.getSimpleName();
       public void onClick(View view) {
 
         if (hasError()) {
+
           File file = new File(filePath);
           RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-          MultipartBody.Part body = MultipartBody.Part.createFormData("userfile", file.getName(), requestFile);
+          MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
 
           RequestBody textSample = RequestBody.create(MediaType.parse("text/plain"), userName.getText().toString());
 
@@ -267,14 +269,15 @@ private static final String TAG = FirstFragment.class.getSimpleName();
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
               ServerResponse res = response.body();
-              Log.e(TAG, response.errorBody()+"");
-              NavHostFragment.findNavController(FirstFragment.this).navigate(R.id.action_FirstFragment_to_SecondFragment);
+              Log.e(TAG, res.getUrl());
+              Glide.with(getActivity()).load(res.getUrl()).into(userImage);
+             NavHostFragment.findNavController(FirstFragment.this).navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
 
             @Override
             public void onFailure(Call<ServerResponse> call, Throwable t) {
-            Log.e(TAG, t.getLocalizedMessage());
-
+            Log.e(TAG, t.getMessage());
+              //NavHostFragment.findNavController(FirstFragment.this).navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
           });
 

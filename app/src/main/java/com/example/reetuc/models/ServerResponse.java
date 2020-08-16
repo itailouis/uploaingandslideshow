@@ -4,6 +4,23 @@ public class ServerResponse {
   private boolean error;
   private String url;
   private String id;
+  private String message;
+
+  public boolean isError() {
+    return error;
+  }
+
+  public void setError(boolean error) {
+    this.error = error;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
   public Boolean getError() {
     return error;
