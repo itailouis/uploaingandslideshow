@@ -150,7 +150,18 @@
 
           </LinearLayout>
 
+          <fragment android:id="@+id/autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            />
+          <View
+            android:background="@color/colorPrimary"
+            android:layout_height="2dp"
+            android:layout_width="match_parent" />
+
           <com.google.android.material.textfield.TextInputLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/locationLayout"

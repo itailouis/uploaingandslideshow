@@ -11,6 +11,7 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,11 +45,21 @@ import com.example.reetuc.dialogs.SetTimeDialogFragment;
 import com.example.reetuc.models.ServerResponse;
 import com.example.reetuc.network.ApiConfig;
 import com.example.reetuc.network.ClientService;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -67,6 +78,13 @@ import static androidx.core.content.FileProvider.getUriForFile;
 public class FirstFragment extends Fragment implements SetTimeDialogFragment.DialogListener,SetDateDialogFragment.DialogListener {
 
 private static final String TAG = FirstFragment.class.getSimpleName();
+
+
+
+
+
+
+
   private RadioGroup radioSexGroup;
   private RadioButton radioSexFemale;
   private RadioButton radioSexMale;
@@ -87,6 +105,9 @@ private static final String TAG = FirstFragment.class.getSimpleName();
 
   private final static int ALL_PERMISSIONS_RESULT = 107;
   private final static int IMAGE_RESULT = 200;
+  private String selectedPlace;
+  AutocompleteSupportFragment autocompleteFragment;
+  View view;
 
   Uri picUri;
 
@@ -99,7 +120,8 @@ private static final String TAG = FirstFragment.class.getSimpleName();
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     // Inflate the layout for this fragment
-    return inflater.inflate(R.layout.fragment_first, container, false);
+    view = inflater.inflate(R.layout.fragment_first, container, false);
+    return view ;
   }
 
   public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -145,6 +167,31 @@ private static final String TAG = FirstFragment.class.getSimpleName();
     location.setThreshold(1);
     locationLayout = view.findViewById(R.id.locationLayout);
 
+    PlacesClient placesClient = Places.createClient(getContext());
+     autocompleteFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+    autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+    autocompleteFragment.setHint("Search Location");
+
+
+    // Set up a PlaceSelectionListener to handle the response.
+    autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+      @Override
+      public void onPlaceSelected(@NotNull Place place) {
+        // TODO: Get info about the selected place.
+        selectedPlace = place.getName();
+
+        Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+      }
+
+
+      @Override
+      public void onError(@NotNull Status status) {
+        // TODO: Handle the error.
+        selectedPlace="";
+        Log.i(TAG, "An error occurred: " + status);
+      }
+    });
+/**/
 
     password= view.findViewById(R.id.password);
     passwordLayout = view.findViewById(R.id.passwordLayout);
@@ -252,36 +299,6 @@ private static final String TAG = FirstFragment.class.getSimpleName();
     setDate.setError(null);
   }
 
-  /*@Override
-  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-
-    switch (requestCode) {
-      case REQUEST_IMAGE_CAPTURE:
-        if (resultCode == RESULT_OK) {
-          Uri imageUri = data.getData();
-          filePath = imageUri.getPath();
-          userImage.setImageURI(getCacheImagePath(filePath));
-
-          //sentToserver();
-        } else {
-          setResultCancelled();
-        }
-        break;
-      case REQUEST_GALLERY_IMAGE:
-        if (resultCode == RESULT_OK) {
-          Uri imageUri = data.getData();
-          userImage.setImageURI(imageUri);
-          filePath = imageUri.getPath();
-        } else {
-          setResultCancelled();
-        }
-        break;
-
-      default:
-        setResultCancelled();
-    }
-  }*/
 
 
   public Intent getPickImageChooserIntent() {
@@ -510,17 +527,23 @@ Log.i(TAG,"validation");
   }
 
   Log.i(TAG,"pass time ");
-  String inputlocation =location.getText().toString();
-  if(inputlocation.isEmpty() || !validLocation( inputlocation)){
+  String inputlocation =selectedPlace;
+  if(inputlocation.isEmpty() ){
 
-    locationLayout.setError("Invalid location");
+
+    Snackbar snackbar = Snackbar.make(view, "Please enter location", Snackbar.LENGTH_LONG)
+      .setAction("Action", null);
+    View sbView = snackbar.getView();
+    sbView.setBackgroundColor(Color.BLACK);
+    snackbar.show();
+
     return  false;
   }else{
 
     locationLayout.setError(null);
 
   }
-  Log.i(TAG,"pass location");
+  /*Log.i(TAG,"pass location");*/
 
 
 

@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.reetuc.network.ApiConfig;
 import com.example.reetuc.network.ClientService;
+import com.google.android.libraries.places.api.Places;
 
 public class App extends Application {
 
@@ -17,6 +18,7 @@ public class App extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
+    Places.initialize(getApplicationContext(), getString(R.string.api_key));
     endPoints = ClientService.getClient().create(ApiConfig.class);
   }
 
